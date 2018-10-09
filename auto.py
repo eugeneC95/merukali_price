@@ -10,16 +10,14 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 #from selenium.webdriver.chrome.options import Options
 
-#options = webdriver.ChromeOptions()
-#prefs = {"profile.managed_default_content_settings.images":1}
-# options.add_experimental_option("prefs",prefs)
-# options.add_argument(r'--user-data-dir=C:\Users\EUGENE\AppData\Local\Google\Chrome\User Data')
-# options.add_argument('disable-infobars')
-#options.add_argument("--disable-extensions")
-#options.add_argument("--start-maximized")
-#driver = webdriver.Firefox('E:/selenium/geckodriver.exe') #driver = webdriver.Firefox('E:\selenium\chromedriver.exe',options=options)
-driver = webdriver.Firefox()
-
+options = webdriver.ChromeOptions()
+prefs = {"profile.managed_default_content_settings.images":1}
+options.add_experimental_option("prefs",prefs)
+#options.add_argument(r'--user-data-dir=C:\Users\EUGENE\AppData\Local\Google\Chrome\User Data')
+options.add_argument('disable-infobars')
+options.add_argument("--disable-extensions")
+options.add_argument("--start-maximized")
+driver = webdriver.Chrome("C:/Users/student/Desktop/school-it-project/chromedriver.exe",options=options)
 
 
 #int
