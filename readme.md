@@ -2,3 +2,4 @@
 <h2>Installing</h2>
 
 <span>pip install keyboard</span>
+<span>pip install selenium</span>
