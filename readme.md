@@ -2,5 +2,5 @@
 <h2>Installing</h2>
 
 <span>pip install keyboard</span><br>
-<span>pip install selenium</span>
-<span>pip install pyodbc  </span>
+<span>pip install selenium</span><br>
+<span>pip install PyMySQL</span><br>
