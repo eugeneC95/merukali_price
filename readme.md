@@ -3,3 +3,4 @@
 
 <span>pip install keyboard</span><br>
 <span>pip install selenium</span>
+<span>pip install pyodbc  </span>
