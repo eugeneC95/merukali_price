@@ -81,11 +81,12 @@ def research(j):
             print("Uploaded\n")
     driver.refresh()
     time.sleep(1)
-    print("lopped\n")
-    if j >= 15:
+
+    if j >= 3:
         j=1
     else:
         j += 1
+    print("lopped\n" + str(j))
     research(j)
 research(1)
 db.close()
