@@ -11,15 +11,16 @@ prefs = {"profile.managed_default_content_settings.images":2}
 
 options.add_experimental_option("prefs",prefs)
 options.add_argument("--window-size=300,300")#--start-maximized
-driver = webdriver.Chrome("S:/Career/merukali_price/chromedriver.exe",options=options)
+driver = webdriver.Chrome("D:/Documents/Career/merukali_price/chromedriver.exe",options=options)
 #https://www.mercari.com/jp/brand/1620/
 keyword = ''
 db = pymysql.connect(host='206.189.90.203',user='zun95',passwd='Hotdilvin95',db='merucali')
 cursor = db.cursor()
 def insert(hre,tit,lik,sto,pri,tim):
+    print(lik,sto,pri,tim)
     try:
         cursor.execute("INSERT into post (href,title,likes,stock,price,time_update) VALUES(%s, %s, %s, %s, %s, %s)",(hre,tit,lik,sto,pri,tim))
-        db.commit()
+        #db.commit()
     except:
         print("error")
         db.rollback()
