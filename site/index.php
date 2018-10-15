@@ -7,7 +7,7 @@
 try{
   $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
   $conn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-  $sth = $conn->prepare("SELECT * FROM post");
+  $sth = $conn->prepare("SELECT * FROM post ORDER BY post.time_update DESC LIMIT 0,200");
   $sth->execute();
   $datas = $sth->fetchAll();
   for($data as $datas){

@@ -13,16 +13,17 @@ options.add_experimental_option("prefs",prefs)
 options.add_argument("--window-size=300,300")#--start-maximized
 driver = webdriver.Chrome("D:/Documents/Career/merukali_price/chromedriver.exe",options=options)
 #https://www.mercari.com/jp/brand/1620/
-keyword = 'ジャケット'
+keyword = ''
 db = pymysql.connect(host='206.189.90.203',user='zun95',passwd='Hotdilvin95',db='merucali')
 cursor = db.cursor()
 def insertpost(hre,imges,tit,lik,sto,pri,tim):
     try:
-        cursor.execute("INSERT into list (href,img,title,likes,stock,price,time_update) VALUES(%s ,%s ,%s, %s, %s, %s, %s)",(hre,imges,tit,lik,sto,pri,tim))
+        cursor.execute("INSERT into post (href,img,title,likes,stock,price,time_update) VALUES(%s ,%s ,%s, %s, %s, %s, %s)",(hre,imges,tit,lik,sto,pri,tim))
         db.commit()
     except:
         print('error')
         db.rollback()
+
 def insertchange(hre,imges,tit,lik,sto,pri,tim):
     try:
         cursor.execute("INSERT into changes (href,img,title,likes,stock,price,time_update) VALUES(%s ,%s ,%s, %s, %s, %s, %s)",(hre,imges,tit,lik,sto,pri,tim))
@@ -32,7 +33,7 @@ def insertchange(hre,imges,tit,lik,sto,pri,tim):
         db.rollback()
 def gethref(x):
     try:
-        cursor.execute("SELECT * FROM list WHERE href LIKE %s",(x))
+        cursor.execute("SELECT * FROM post WHERE href LIKE %s",(x))
         datas = cursor.fetchall()
         if datas != ():
             for data in datas:
@@ -44,7 +45,7 @@ def gethref(x):
         print ("Error: unable to fetch data")
 def get(x,h):
     try:
-        cursor.execute("SELECT * FROM list WHERE href LIKE %s ORDER BY time_update ASC",(x))
+        cursor.execute("SELECT * FROM post WHERE href LIKE %s ORDER BY time_update ASC",(x))
         datas = cursor.fetchall()
         if len(datas) > 1:
             #main reinput
@@ -72,13 +73,13 @@ def get(x,h):
         print ("Errorget: unable to fetch data")
 def updatetime(tim,hre,pri):
     try:
-        cursor.execute("UPDATE list SET time_update =%s WHERE href = %s && price =%s",(tim,hre,pri))
+        cursor.execute("UPDATE post SET time_update =%s WHERE href = %s && price =%s",(tim,hre,pri))
         db.commit()
     except:
         print ("Error: unable to fetch data")
 def rearrange():
     try:
-        cursor.execute("SELECT * FROM list ")
+        cursor.execute("SELECT * FROM post ")
         datas = cursor.fetchall()
         h = 0
         for data in datas:
@@ -88,7 +89,7 @@ def rearrange():
     except:
         print ("Errormain: unable to fetch data")
 def research(j):
-    link = "https://www.mercari.com/jp/search/?page="+str(j)+"&keyword="+keyword
+    link = "https://www.mercari.com/jp/search/?page="+str(j)+"&keyword=ストッキング"
     driver.get(link);
     #get all link
     time.sleep(1)
