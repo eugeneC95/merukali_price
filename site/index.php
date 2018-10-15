@@ -1,8 +1,8 @@
 <?php
-  $host ="";
-  $suer ="";
-  $pass ="";
-  $db   ="";
+  $host ="localhost";
+  $suer ="zun95";
+  $pass ="Hotdilvin95";
+  $db   ="merucali";
 
 try{
   $conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);
@@ -15,8 +15,6 @@ try{
   }
 }
 catch(PDOException $e){
-  {
     echo "Connection To db failed:".$e->getMessage();
-  }
 }
 ?>
