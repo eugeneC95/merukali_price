@@ -16,12 +16,19 @@ driver = webdriver.Chrome("S:/Career/merukali_price/chromedriver.exe",options=op
 keyword = ''
 db = pymysql.connect(host='206.189.90.203',user='zun95',passwd='Hotdilvin95',db='merucali')
 cursor = db.cursor()
-def insert(hre,tit,lik,sto,pri,tim):
+def insertpost(hre,imges,tit,lik,sto,pri,tim):
     try:
-        cursor.execute("INSERT into post (href,title,likes,stock,price,time_update) VALUES(%s, %s, %s, %s, %s, %s)",(hre,tit,lik,sto,pri,tim))
+        cursor.execute("INSERT into post (href,img,title,likes,stock,price,time_update) VALUES(%s ,%s ,%s, %s, %s, %s, %s)",(hre,imges,tit,lik,sto,pri,tim))
         db.commit()
     except:
-        print("error")
+        print("errorPost")
+        db.rollback()
+def insertchange(hre,imges,tit,lik,sto,pri,tim):
+    try:
+        cursor.execute("INSERT into changes (href,img,title,likes,stock,price,time_update) VALUES(%s ,%s ,%s, %s, %s, %s, %s)",(hre,imges,tit,lik,sto,pri,tim))
+        db.commit()
+    except:
+        print("errorChanges")
         db.rollback()
 def gethref(x):
     try:
@@ -29,20 +36,59 @@ def gethref(x):
         datas = cursor.fetchall()
         if datas != ():
             for data in datas:
-                price = data[5]
+                price = data[6]
             return "true",price
         elif datas == ():
             return "false","0"
     except:
         print ("Error: unable to fetch data")
+def get(x,h):
+    try:
+        cursor.execute("SELECT * FROM post WHERE href LIKE %s ORDER BY time_update ASC",(x))
+        datas = cursor.fetchall()
+        if len(datas) > 1:
+            #main reinput
+            for data in datas:
+                link = data[1]
+                imgs = data[2]
+                title = data[3]
+                likes = data[4]
+                stock = data[5]
+                prices = data[6]
+                time = data[7]
+                #print(link,title,likes,stock,prices,time)
+                cursor.execute("SELECT * FROM changes WHERE href LIKE %s AND img LIKE %s AND title LIKE %s AND likes LIKE %s AND stock LIKE %s AND price LIKE %s",(link,imgs,title,likes,stock,prices))
+                datos = cursor.fetchall()
+                if len(datos) >= 1:
+                    print("data alaready haved")
+                    break
+                else:
+                    insertchange(link,imgs,title,likes,stock,prices,time)
+                    print("insert new data to table")
+        else:
+            #donothings
+            print(str(h),"none duplicate")
+    except:
+        print ("Errorget: unable to fetch data")
 def updatetime(tim,hre,pri):
     try:
         cursor.execute("UPDATE post SET time_update =%s WHERE href = %s && price =%s",(tim,hre,pri))
         db.commit()
     except:
         print ("Error: unable to fetch data")
+def rearrange():
+    try:
+        cursor.execute("SELECT * FROM post ")
+        datas = cursor.fetchall()
+        h = 0
+        for data in datas:
+            link = data[1]
+            h += 1
+            get(link,h)
+    except:
+        print ("Errormain: unable to fetch data")
 def research(j):
-    link = "https://www.mercari.com/jp/search/?page="+str(j)+"&keyword=supreme"
+    link = "https://www.mercari.com/jp/search/?page="+str(j)+"&keyword=ストッキング"
     driver.get(link);
     #get all link
     time.sleep(1)
@@ -54,8 +100,9 @@ def research(j):
             prices = driver.find_element_by_xpath("//div[@class='items-box-content clearfix']//section["+str(i)+"]//div[@class='items-box-price font-5']").text
             prices = prices.replace("¥ ","")
             prices = prices.replace(",","")
+            imgs = driver.find_element_by_xpath("//div[@class='items-box-content clearfix']//section["+str(i)+"]//img[1]").get_attribute("data-src")
+            print("img: "+str(imgs))
             likess = driver.find_element_by_xpath("//div[@class='items-box-content clearfix']//section["+str(i)+"]//span").text
-            eptime = time.process_time()
         except NoSuchElementException:
             likess = "0"
         try:
@@ -74,10 +121,11 @@ def research(j):
                 print("time updated\n")
             else:
                 #insert post with new price
-                insert(hrefs,titles,likess,stock,prices,time_updates)
+                insertpost(hrefs,imgs,titles,likess,stock,prices,time_updates)
                 print("New Uploaded\n")
         else:
-            insert(hrefs,titles,likess,stock,prices,time_updates)
+            imgs = str(imgs)
+            insertpost(hrefs,imgs,titles,likess,stock,prices,time_updates)
             print("Uploaded\n")
     driver.refresh()
     time.sleep(1)
@@ -87,6 +135,7 @@ def research(j):
     else:
         j += 1
     print("lopped\n" + str(j))
+    rearrange()
     research(j)
 research(1)
 db.close()
