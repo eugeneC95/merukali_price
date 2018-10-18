@@ -10,7 +10,7 @@ options = webdriver.ChromeOptions()
 prefs = {"profile.managed_default_content_settings.images":2}
 
 options.add_experimental_option("prefs",prefs)
-options.add_argument("--window-size=300,300")#--start-maximized
+options.add_argument("--window-size=100,100")#--start-maximized
 driver = webdriver.Chrome("D:/Documents/Career/merukali_price/chromedriver.exe",options=options)
 #https://www.mercari.com/jp/brand/1620/
 keyword = 'ジャケット'
@@ -76,6 +76,25 @@ def updatetime(tim,hre,pri):
         db.commit()
     except:
         print ("Error: unable to fetch data")
+def index():
+    prices =[]
+    da = ""
+    cursor.execute("SELECT href,time_update FROM changes LIMIT 0,5")
+    datas = cursor.fetchall()
+    for data in datas:
+        if da == "":
+            cursor.execute("SELECT * FROM changes WHERE href LIKE %s",data[0])
+        else:
+            cursor.execute("SELECT * FROM changes WHERE href LIKE %s AND time_update NOT LIKE (SELECT time_update FROM changes WHERE time_update LIKE %s)",(data[0],da))
+        da = data[1]
+        datos = cursor.fetchall()
+        for dato in datos:
+            prices.append(int(dato[6]))
+            print(str(dato[6]) + str(dato[3]))
+        # price = prices[1] - prices[0]
+        # prices = []
+        # print(price)
+
 def rearrange():
     try:
         cursor.execute("SELECT * FROM list ")
@@ -137,7 +156,8 @@ def research(j):
     print("lopped\n" + str(j))
     rearrange()
     research(j)
-research(1)
+#research(1)
+index()
 db.close()
 # driver.quit()
 # quit()
